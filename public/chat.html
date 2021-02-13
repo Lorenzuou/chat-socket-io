@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <title>Chat</title>
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
+        integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
+        crossorigin="anonymous"></script>
+    <script src="/socket.io/socket.io.js"></script>
+
+    <style>
+        .contem {
+            width: 40%;
+            margin: auto;
+            margin-top: 50px;
+        }
+
+        #chat {
+            border: 1px solid black;
+            height: 400px;
+            margin-top: 50px;
+            overflow: auto;
+            width: 100%;
+        }
+
+        @media only screen and (max-width: 600px) {
+            .contem {
+                width: 90%;
+            }
+        }
+
+        #caixa {
+            margin-top: 10px;
+        }
+
+        #mensagemForm {
+
+            display: flex;
+        }
+
+        #mensagem {
+            width: 80%
+        }
+
+        .texto {
+            margin: 0 0 0 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="contem">
+
+        <div>
+            <form id="nomeUsuario" autocomplete="off">
+
+                <label for="nome">Digite o seu nome: </label>
+
+
+                <input type="text" name="nome" id="nome">
+
+                <script> 
+
+                    if(localStorage.getItem('nome')){ 
+                        $('#nome').val(localStorage.getItem('nome'));
+                    }
+                </script>
+                <!-- <button type="submit">Definir</button> -->
+            </form>
+        </div>
+
+        <div id="chat">
+
+
+        </div>
+
+        <div id="caixa">
+
+            <form id="mensagemForm" autocomplete="off">
+                <input type="text" name="mensagem" id="mensagem">
+
+
+                <button type="submit">Enviar</button>
+            </form>
+
+        </div>
+        <script>
+            var socket = io();
+
+            function updateScroll() {
+                var element = document.getElementById("chat");
+                element.scrollTop = element.scrollHeight;
+            }
+
+            function mostrarMensagem(dados) {
+                $('#chat').append('<div class="texto"><strong>' + dados.nome + '</strong>: ' + dados.mensagem + '</div>');
+                updateScroll();
+            }
+            
+            function mostrarMensagemSua(dados){ 
+                $('#chat').append('<div class="texto"><strong>' + dados.nome + '</strong>: ' + dados.mensagem + '</div>');
+                updateScroll();
+            }
+
+            socket.on('receberMensagem', function (dados) {
+                mostrarMensagem(dados);
+
+            });
+
+
+            socket.on('receberHistorico', function (dados) {
+                for (dados of dados) {
+                    mostrarMensagem(dados);
+                }
+            });
+
+            $('#mensagemForm').submit(function (event) {
+                event.preventDefault();
+
+                let mensagem = $('input[name=mensagem]').val();
+                let nome = $('input[name=nome').val();
+                let corpo = {
+                    nome: nome,
+                    mensagem: mensagem
+                };
+
+           
+                
+                
+                if (mensagem.length) {
+                    localStorage.setItem("nome", nome); // salva o nome do usuário  
+                    socket.emit('enviarMensagem', corpo);
+                    mostrarMensagemSua(corpo);
+                    $('input[name=mensagem').val('');//apaga o conteúdo da mensagem dps que ela é enviada; 
+                }
+
+
+
+            }); 
+        </script>
+
+
+
+
+    </div>
+
+
+</body>
+
+</html>

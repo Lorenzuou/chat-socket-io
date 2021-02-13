@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
+        integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
+        crossorigin="anonymous"></script>
+    <script src="/socket.io/socket.io.js"></script>
+
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <title>Quem sou eu</title>
+
+
+    <style>
+        .container {
+            width: 78%;
+            border-style: solid;
+            border-width: 3px;
+            border-color: darkslategray;
+            border-top: none;
+            border-bottom: none;
+        }
+
+        #tela {
+            margin: auto;
+        }
+
+        .rank {
+            list-style-type: none;
+            /* Remove bullets */
+            padding: 0;
+            /* Remove padding */
+            margin: 0;
+            /* Remove margins */
+        }
+
+        .rank-item {
+            display: flex;
+            padding: 10px;
+            border-style: solid;
+            border-width: 1px;
+            border-color: rgb(21, 41, 41);
+
+        }
+
+        .rank-points {
+            margin-left: 67%;
+
+        }
+
+
+        .rank_points-divider {
+            position: absolute;
+            margin-left: 70%;
+            width: 2px;
+            background-color: darkslategray;
+            margin-top: -10px;
+            height: 45px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container ">
+        <div class="d-flex justify-content-center">
+            <h1>Quem sou eu? </h1>
+
+        </div>
+
+        <div class="row">
+            <div class="col-md-8" id="canvas-container">
+                <canvas id=tela height="400" width="500">
+            </div>
+            </canvas>
+
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <ul class="rank">
+                            <li class="rank-item">Jogador 1<div class="rank_points-divider "></div>
+                                <div class="rank-points">4</div>
+                            </li>
+                            <li class="rank-item">Jogador 2<div class="rank_points-divider "></div>
+                                <div class="rank-points">4</div>
+                            </li>
+                            <li class="rank-item">Jogador 3<div class="rank_points-divider "></div>
+                                <div class="rank-points">2</div>
+                            </li>
+                            <li class="rank-item">Jogador 4<div class="rank_points-divider "></div>
+                                <div class="rank-points">15</div>
+                            </li>
+                            <li class="rank-item">Jogador 5<div class="rank_points-divider "></div>
+                                <div class="rank-points">2</div>
+                            </li>
+                        </ul>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8">
+                <form id="nomeBilhete">
+                    <label for="bilheteID">Escreva o nome de algo</label>
+                    <input type="text" placeholder="Darh Vaider, Mulher Maravilha..." name="bilhete" id="bilheteID">
+                    <button type="submit"> Enviar</button>
+
+                </form>
+
+
+            </div>
+            <script>
+                var soquete = io();
+
+                $('#nomeBilhete').submit(function (event) {
+                    event.preventDefault();
+                    let mensagem = $('input[name=bilhete]');
+                    if (mensagem){
+                        console.log("passou aqui");
+                        console.log(mensagem)
+                        soquete.emit('enviarBilhete', mensagem);
+                    }
+
+                }); 
+            </script>
+
+
+        </div>
+
+
+
+    </div>
+</body>
+
+
+<!-- JavaScript Bundle with Popper -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
+    crossorigin="anonymous"></script> -->
+
+
+
+
+
+
+
+
+
+
+
+<script>
+
+    window.onload = function () {
+        tela = document.getElementById('tela');
+        contexto = tela.getContext('2d');
+        contexto.fillStyle = 'black';
+        contexto.fillRect(0, 0, tela.width, tela.height);
+
+        setInterval(function () { }, 1000 / 30);
+
+
+
+    }
+
+</script>
+
+</html>
